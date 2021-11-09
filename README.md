@@ -162,7 +162,7 @@ public RandomListNode Clone(RandomListNode pHead) {
 }
 ```
 
-### 8、**删除链表中重复的结点**
+### 8、删除链表中重复的结点
 
 ```java
 public ListNode deleteDuplication(ListNode pHead) {
@@ -299,7 +299,7 @@ public class 包含min函数的栈 {
 }
 ```
 
-### 12、 **栈的压入、弹出序列**
+### 12、栈的压入、弹出序列
 
 ```java
 public boolean IsPopOrder(int [] pushA,int [] popA) {
@@ -321,3 +321,300 @@ public boolean IsPopOrder(int [] pushA,int [] popA) {
     return stack.isEmpty();
 }
 ```
+
+### 13、二叉树的深度
+
+```java
+public int TreeDepth(TreeNode root) {
+    if (null == root) {
+        return 0;
+    }
+    int l = TreeDepth(root.left);
+    int r = TreeDepth(root.right);
+    return Math.max(l,r) + 1;
+}
+```
+
+### 14、按之字形顺序打印二叉树
+
+```java
+public ArrayList<ArrayList<Integer>> Print(TreeNode root) {
+    ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+    if (null == root) {
+        return res;
+    }
+
+    Queue<TreeNode> q = new LinkedList<>();
+    q.offer(root);
+    boolean flag = false;
+    while (!q.isEmpty()) {
+        int size = q.size();
+        ArrayList<Integer> level = new ArrayList<>();
+        for (int i=0; i<size; i++) {
+            TreeNode t = q.poll();
+            level.add(t.val);
+            if (null != t.left) {
+                q.offer(t.left);
+            }
+            if (null != t.right) {
+                q.offer(t.right);
+            }
+        }
+        if (flag) {
+            Collections.reverse(level);
+        }
+        flag = !flag;
+        res.add(level);
+    }
+    return res;
+}
+```
+
+### 15、二叉搜索树的第k个结点
+
+```java
+TreeNode KthNode(TreeNode root, int k) {
+    List<Integer> res = new ArrayList<>();
+
+    if (null == root || k < 1) {
+        return null;
+    }
+
+    Queue<TreeNode> q = new LinkedList<>();
+    q.offer(root);
+    while (!q.isEmpty()) {
+        TreeNode t = q.poll();
+        res.add(t.val);
+        if (null != t.left) {
+            q.offer(t.left);
+        }
+        if (null != t.right) {
+            q.offer(t.right);
+        }
+    }
+
+    if (res.size() < k) {
+        return null;
+    }
+    Collections.sort(res);
+
+
+    return new TreeNode(res.get(k-1));
+}
+```
+
+### 16、重建二叉树
+
+```java
+public class 重建二叉树 {
+
+    //key是中序遍历的值，value是中序遍历的结果  （下标）
+    Map<Integer, Integer> map = new HashMap<>();
+
+    public TreeNode reConstructBinaryTree(int [] preorder,int [] inorder) {
+        //保存中序遍历的信息
+        for (int i=0; i<inorder.length; i++) {
+            map.put(inorder[i],i);
+        }
+        return createTree(preorder,0,inorder,0,inorder.length-1);
+    }
+    //preIndex是前序遍历的索引，inStart和inEnd是中序遍历的索引范围
+    TreeNode createTree(int[] preorder,int preIndex,int[] inorder,int inStart,int inEnd) {
+        // 判断边界
+        if (inStart > inEnd) {
+            return null;
+        }
+        //获取前序遍历的值
+        int val = preorder[preIndex];
+        //获取前序遍历值在中序遍历的位置
+        int inIndex = map.get(val);
+        //以该值作为根节点的值创建根节点
+        TreeNode root = new TreeNode(val);
+        //根节点的左子树节点数目
+        int leftNum = inIndex - inStart;
+        //根节点以左创建左子树，根节点以右创建右子树
+        root.left = createTree(preorder,preIndex+1,inorder,inStart,inIndex-1);
+        root.right = createTree(preorder,preIndex+1+leftNum,inorder,inIndex+1,inEnd);
+
+        return root;
+    }
+}
+```
+
+### 17、树的子结构
+
+```java
+public class 树的子结构 {
+
+    public boolean HasSubtree(TreeNode root1,TreeNode root2) {
+        if (null == root1 || null == root2) {
+            return false;
+        }
+        //以当前节点为根匹配，或者以左右节点为根匹配
+        return isSub(root1,root2) || HasSubtree(root1.left,root2) || HasSubtree(root1.right,root2);
+    }
+
+    public boolean isSub(TreeNode A, TreeNode B) {
+        //B为空代表匹配完毕
+        if (null == B) {
+            return true;
+        }
+        //B非空但A空，匹配失败
+        if (null == A) {
+            return false;
+        }
+        //两个节点值不同，匹配失败
+        if (A.val != B.val) {
+            return false;
+        }
+        //根节点相同，匹配左右节点
+        return isSub(A.left,B.left) && isSub(A.right,B.right);
+    }
+}
+```
+
+### 18、二叉树的镜像
+
+```java
+public class 二叉树的镜像 {
+// 递归
+//    public TreeNode Mirror (TreeNode root) {
+//        if (null == root) {
+//            return null;
+//        }
+//
+//        Mirror(root.left);
+//        Mirror(root.right);
+//
+//        TreeNode temp = root.right;
+//        root.right = root.left;
+//        root.left = temp;
+//        return root;
+//    }
+
+    // 辅助栈
+    public TreeNode Mirror (TreeNode root) {
+        if (null == root) {
+            return null;
+        }
+
+        Stack<TreeNode> stack = new Stack<>();
+        stack.add(root);
+        while (!stack.isEmpty()) {
+            TreeNode t = stack.pop();
+            if (null != t.left) {
+                stack.push(t.left);
+            }
+            if (null != t.right) {
+                stack.push(t.right);
+            }
+            TreeNode temp = t.right;
+            t.right = t.left;
+            t.left = temp;
+        }
+
+        return root;
+    }
+
+}
+```
+
+### 19、从上往下打印二叉树
+
+```java
+public ArrayList<Integer> PrintFromTopToBottom(TreeNode root) {
+
+    ArrayList<Integer> res = new ArrayList<>();
+
+    if (null == root) {
+        return res;
+    }
+
+    Queue<TreeNode> q = new LinkedList<>();
+    q.offer(root);
+
+    while (!q.isEmpty()) {
+        TreeNode t = q.poll();
+        res.add(t.val);
+        if (null != t.left) {
+            q.offer(t.left);
+        }
+        if (null != t.right) {
+            q.offer(t.right);
+        }
+    }
+
+    return res;
+
+}
+```
+
+### 20、二叉搜索树的后序遍历序列
+
+```java
+// 二叉搜索树 根节点比左节点大比右节点小
+public class 二叉搜索树的后序遍历序列 {
+
+    public boolean VerifySquenceOfBST(int [] sequence) {
+        if (0 == sequence.length) {
+            return false;
+        }
+        return verify(sequence,0,sequence.length-1);
+    }
+
+    public boolean verify(int[] sequence,int i, int j) {
+        if (i >= j) {
+            return true;
+        }
+        int mid = i;
+        //左-右-根，因此mid相当于找到了第一个右节点
+        //例如1，3，2，6，9，7，5，root从1开始遍历到6停止，mid=6,132就是左子树
+        while (sequence[mid] < sequence[j]) {
+            mid++;
+        }
+        int root = mid;
+        //左-右-根，由于已经开始遍历右子树，如果找到第一个不大于j的值只能是j本身
+        //例如1，3，2，6，9，7，5，root从6开始遍历到5停止，root=j
+        while (sequence[root] > sequence[j]) {
+            root++;
+        }
+        //例如1，3，2，6，9，2，5，root从6开始遍历到2停止，root!=j,5的右子树有2，肯定不对
+        if (root != j) {
+            return false;
+        }
+        return verify(sequence,i,mid-1) && verify(sequence,mid,j-1);
+    }
+
+}
+```
+
+### 21、 二叉树中和为某一值的路径(一)
+
+```java
+public class 二叉树中和为某一值的路径一 {
+    public boolean hasPathSum (TreeNode root, int sum) {
+        // write code here
+        if (null == root) {
+            return false;
+        }
+        // 深度优先遍历
+        return dfs(root,sum);
+    }
+
+    public boolean dfs(TreeNode root, int target) {
+        // 目标路径不存在，开始回溯
+        if (null == root) {
+            return false;
+        }
+        // 更新目标值
+        target -= root.val;
+        // 当当前节点为叶子节点并且目标路径存在时，返回 true
+        if (null==root.left && null==root.right && 0==target) {
+            return true;
+        }
+        // 对左右分支进行 dfs
+        return dfs(root.left,target) || dfs(root.right,target);
+    }
+}
+```
+

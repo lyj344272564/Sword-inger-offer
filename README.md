@@ -703,3 +703,209 @@ public class 二叉搜索树与双向链表 {
 }
 ```
 
+### 24、判断是不是平衡二叉树
+
+```java
+public class 判断是不是平衡二叉树 {
+
+    public boolean IsBalanced_Solution(TreeNode root) {
+        if (null == root) {
+            return true;
+        }
+
+        int lh = dfs(root.left);
+        int rh = dfs(root.right);
+
+        return Math.abs(lh-rh)<=1 && IsBalanced_Solution(root.left) && IsBalanced_Solution(root.right);
+
+    }
+
+    public int dfs(TreeNode root) {
+        if (null == root) {
+            return 0;
+        }
+        return Math.max(dfs(root.left),dfs(root.right)) + 1;
+    }
+}
+```
+
+### 25、**二叉树的下一个结点**
+
+```java
+public TreeLinkNode GetNext(TreeLinkNode p) {
+    // 有右儿子 则有儿子的最左儿子就是下一个
+    if (null != p.right) {
+        p = p.right;
+        while (null != p.left) {
+            p = p.left;
+        }
+        return p;
+    }
+    // 若没有右儿子 则判断这个点是不是父节点的右节点是的话那就一直往上找知道找到第一个不是右  则返回他的父节点
+    while (null!=p.next && p==p.next.right) {
+        p = p.next;
+    }
+    return p.next;
+}
+```
+
+### 26、对称的二叉树
+
+```java
+public class 对称的二叉树 {
+
+    boolean isSymmetrical(TreeNode root) {
+        if (null == root) {
+            return true;
+        }
+        return dfs(root.left,root.right) && dfs(root.right,root.left);
+    }
+
+    public boolean dfs(TreeNode l, TreeNode r) {
+        if (null==l || null==r) {
+            return null==l&&null==r;
+        }
+        if (l.val != r.val) {
+            return false;
+        }
+        return dfs(l.left,r.right) && dfs(l.right,r.left);
+    }
+}
+```
+
+### 27、把二叉树打印成多行
+
+```java
+ArrayList<ArrayList<Integer>> Print(TreeNode root) {
+   
+    ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+    if (null == root) {
+        return res;
+    }
+    Queue<TreeNode> q = new LinkedList<>();
+    q.offer(root);
+
+    while (!q.isEmpty()) {
+        int size = q.size();
+        ArrayList<Integer> level = new ArrayList<>();
+        for (int i=0; i<size; i++) {
+            TreeNode t = q.poll();
+            level.add(t.val);
+            if (null != t.left) {
+                q.offer(t.left);
+            }
+            if (null != t.right) {
+                q.offer(t.right);
+            }
+        }
+        res.add(level);
+    }
+    return res;
+}
+```
+
+### 28、序列化二叉树
+
+```java
+public class 序列化二叉树 {
+    
+    String Serialize(TreeNode root) {
+        if (null == root) {
+            return "#";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        Deque<TreeNode> stack = new LinkedList<>();
+
+        stack.offerLast(root);
+        while (!stack.isEmpty()) {
+            TreeNode t = stack.pollLast();
+            if (null == t) {
+                sb.append("#").append(",");
+            } else {
+                sb.append(t.val).append(",");
+                // 因为要取最后一个所以先添加right
+                stack.offerLast(t.right);
+                stack.offerLast(t.left);
+            }
+        }
+        return sb.toString();
+    }
+
+    TreeNode Deserialize(String str) {
+        Deque<String> queue = new LinkedList<>(Arrays.asList(str.split(",")));
+        return buildTree(queue);
+    }
+
+    TreeNode buildTree(Deque<String> queue) {
+        String s = queue.poll();
+        if ("#".equals(s)) {
+            return null;
+        }
+        int val = Integer.parseInt(s);
+        TreeNode root = new TreeNode(val);
+        root.left = buildTree(queue);
+        root.right = buildTree(queue);
+        return root;
+    }
+}
+```
+
+### 29、二叉树中和为某一值的路径三
+
+```java
+public int key = 0;
+
+public int FindPath (TreeNode root, int sum) {
+    // write code here
+    if (null == root) {
+        return key;
+    }
+    dfs(root,sum);
+    FindPath(root.left,sum);
+    FindPath(root.right,sum);
+
+    return key;
+}
+
+public void dfs(TreeNode root, int sum) {
+    if (null == root) {
+        return;
+    }
+    sum -= root.val;
+    if (0 == sum) {
+        key++;
+    }
+    dfs(root.left, sum);
+    dfs(root.right, sum);
+}
+```
+
+### 30、在二叉树中找到两个节点的最近公共祖先
+
+```java
+public class 在二叉树中找到两个节点的最近公共祖先 {
+
+    public int lowestCommonAncestor (TreeNode root, int o1, int o2) {
+        return helper(root,o1,o2).val;
+    }
+
+    public TreeNode helper(TreeNode root, int o1, int o2) {
+        if (null==root || root.val==o1 || root.val==o2) {
+            return root;
+        }
+        TreeNode l = helper(root.left,o1,o2);
+        TreeNode r = helper(root.right,o1,o2);
+        //如果left为空，说明这两个节点在root结点的右子树上，我们只需要返回右子树查找的结果即可
+        if (null == l) {
+            return r;
+        }
+        if (null == r) {
+            return l;
+        }
+        //如果left和right都不为空，说明这两个节点一个在root的左子树上一个在root的右子树上，
+        //我们只需要返回cur结点即可。
+        return root;
+    }
+}
+```

@@ -588,7 +588,7 @@ public class 二叉搜索树的后序遍历序列 {
 }
 ```
 
-### 21、 二叉树中和为某一值的路径(一)
+### 21、 二叉树中和为某一值的路径一
 
 ```java
 public class 二叉树中和为某一值的路径一 {
@@ -615,6 +615,91 @@ public class 二叉树中和为某一值的路径一 {
         // 对左右分支进行 dfs
         return dfs(root.left,target) || dfs(root.right,target);
     }
+}
+```
+
+### 22、二叉树中和为某一值的路径二
+
+```java
+public class 二叉树中和为某一值的路径二 {
+
+    ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+    ArrayList<Integer> temp = new ArrayList<>();
+
+    public ArrayList<ArrayList<Integer>> FindPath(TreeNode root, int sum) {
+        help(root,sum);
+        return res;
+    }
+
+    public void help(TreeNode root, int sum) {
+        if (null == root) {
+            return ;
+        }
+        temp.add(root.val);
+        // 只有在路径末尾是叶子节点时才添加结果
+        if (sum==root.val && null==root.left && null==root.right) {
+            res.add(new ArrayList<>(temp));
+        }
+        help(root.left,sum-root.val);
+        help(root.right,sum-root.val);
+        temp.remove(temp.size()-1);
+    }
+}
+```
+
+### 23、二叉搜索树与双向链表
+
+```java
+public class 二叉搜索树与双向链表 {
+
+    public TreeNode Convert(TreeNode root) {
+        if (null == root) {
+            return null;
+        }
+
+        TreeNode left = rightMost(root.left);
+        TreeNode right = leftMost(root.right);
+
+        Convert(root.left);
+        Convert(root.right);
+
+        if (null != left) {
+            left.right = root;
+        }
+        root.left = left;
+
+        if (null != right) {
+            right.left = root;
+        }
+        root.right = right;
+        while (null != root.left) {
+            root = root.left;
+        }
+        return root;
+    }
+
+    // 找到最左面的节点
+    TreeNode leftMost(TreeNode root) {
+        if (null == root) {
+            return null;
+        }
+        while (null != root.left) {
+            root = root.left;
+        }
+        return root;
+    }
+
+    //找到最右面的节点
+    TreeNode rightMost(TreeNode root) {
+        if (null == root) {
+            return null;
+        }
+        while (null != root.right) {
+            root = root.right;
+        }
+        return root;
+    }
+
 }
 ```
 

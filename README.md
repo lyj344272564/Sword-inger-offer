@@ -909,3 +909,284 @@ public class 在二叉树中找到两个节点的最近公共祖先 {
     }
 }
 ```
+
+### 31、二维数组中的查找
+
+```java
+public boolean Find(int target, int [][] array) {
+    int n = array.length;
+    int m = array[0].length;
+
+    int i = 0;
+    int j = m - 1;
+    while (i<n && j>=0) {
+        if (array[i][j] == target) {
+            return true;
+        } else if (array[i][j] < target){
+            i++;
+        } else {
+            j--;
+        }
+    }
+    return false;
+}
+```
+
+### 32、数字在升序数组中出现的次数
+
+```java
+public int GetNumberOfK(int [] array , int k) {
+    if (0 == array.length) {
+        return 0;
+    }
+    int[] res = new int[2];
+    int l = 0;
+    int r = array.length - 1;
+
+    while (l<r) {
+        int mid = l + r >> 1;
+        if (array[mid] >= k) {
+            r = mid;
+        } else {
+            l = mid + 1;
+        }
+    }
+
+    if (array[l] != k) {
+        return 0;
+    }
+    int L = l;
+    l = 0;
+    r = array.length - 1;
+    while (l<r) {
+        int mid = l + r + 1 >> 1;
+        if (array[mid] <= k) {
+            l = mid;
+        } else {
+            r = mid - 1;
+        }
+    }
+    return r-L+1;
+}
+```
+
+### 33、滑动窗口的最大值
+
+```java
+public ArrayList<Integer> maxInWindows(int [] num, int k) {
+    ArrayList<Integer> res = new ArrayList<>();
+    if (null == num || k<1 || k>num.length) {
+        return res;
+    }
+    // 存储的是下标
+    LinkedList<Integer> qmax = new LinkedList<>();
+
+    for (int i=0; i<num.length; i++) {
+        while (!qmax.isEmpty() && num[qmax.peekLast()] <= num[i]) {
+            qmax.pollLast();
+        }
+        qmax.addLast(i);
+        // 判断窗口大小
+        if (qmax.peekFirst() == i-k) {
+            qmax.pollFirst();
+        }
+        if (i >= k-1) {
+            res.add(num[qmax.peekFirst()]);
+        }
+    }
+
+    return res;
+}
+```
+
+### 34、翻转单词序列
+
+```java
+public String ReverseSentence(String str) {
+    String[] s = str.split(" ");
+    List<String> list = new ArrayList<>();
+
+    for (int i=0; i<s.length; i++) {
+        list.add(s[i]);
+    }
+
+    Collections.reverse(list);
+    StringBuilder sb = new StringBuilder();
+
+    for (int i=0; i<list.size(); i++) {
+        if (i < list.size()-1) {
+            sb.append(list.get(i) + " ");
+        } else {
+            sb.append(list.get(i));
+        }
+    }
+
+    return sb.toString();
+}
+```
+
+### 35、旋转数组的最小数字
+
+```java
+public int minNumberInRotateArray(int [] array) {
+    // 边界
+    if (0 == array.length) {
+        return -1;
+    }
+    int n = array.length - 1;
+    // 去掉一样的
+    while (n>0 && array[n] == array[0]) {
+        n--;
+    }
+    // 判断是否升序
+    if (array[n] >= array[0]) {
+        return array[0];
+    }
+
+    // 二分
+    int l = 0;
+    int r = n;
+    while (l < r) {
+        int mid = l + r >> 1;
+        if (array[mid] < array[0]) {
+            r = mid;
+        } else {
+            l = mid + 1;
+        }
+    }
+
+    return array[l];
+}
+```
+
+### 36、字符串的排列
+
+```java
+public class 字符串的排列 {
+
+    ArrayList<String> res  = new ArrayList<>();
+    char[] c;
+
+    public ArrayList<String> Permutation(String str) {
+        c = str.toCharArray();
+        dfs(0);
+        return res;
+    }
+
+    public void dfs(int x) {
+        if (x == c.length-1) {
+            res.add(String.valueOf(c));
+            return;
+        }
+        HashSet<Character> set = new HashSet<>();
+        for (int i=x; i<c.length; i++) {
+            if (set.contains(c[i])) {
+                continue;
+            }
+            set.add(c[i]);
+            swap(i,x);
+            dfs(x+1);
+            swap(i,x);
+        }
+    }
+
+    public void swap(int a, int b) {
+        char tmp = c[a];
+        c[a] = c[b];
+        c[b] = tmp;
+    }
+
+}
+```
+
+### 37、数字序列中某一位的数字
+
+```java
+public int findNthDigit (int n) {
+    // 从1开始但是还有0
+    n--;
+    // 减去0
+    n++;
+    int i = 1;
+    // 这一位有多少个数
+    long s = 9;
+    // 这一位数的刚开始的数字
+    int base = 1;
+    // 确定是几位数
+    while (n > i*s) {
+        n -= s*i;
+        i++;
+        s *= 10;
+        base *= 10;
+    }
+    // 确定是几位数的第几个数
+    long num = base + (n-1)/i;
+    // 属于那个数的第几位
+    return Long.toString(num).charAt((n-1)%i)-'0';
+}
+```
+
+### 38、连续子数组的最大和
+
+```java
+public int FindGreatestSumOfSubArray(int[] array) {
+    if (null == array) {
+        return 0;
+    }
+    int s = 0;
+    int res = Integer.MIN_VALUE;
+
+    for (int x : array) {
+       if (s<0) {
+           s = 0;
+       }
+       s+=x;
+       res = Math.max(res,s);
+    }
+    return res;
+}
+```
+
+### 39、连续子数组的最大和二
+
+```java
+public int[] FindGreatestSumOfSubArray (int[] array) {
+    // write code here
+    int[] dp = new int[array.length];
+
+    dp[0] = array[0];
+
+    int maxLength = 1;
+    int maxSum = array[0];
+    int left = 0;
+    int right = 0;
+    int snapLeft = 0;
+    int snapRight = 0;
+
+    for (int i=1; i<=array.length-1; i++) {
+        right++;
+        // 比较当前和前一个比较
+        dp[i] = Math.max(array[i]+dp[i-1],array[i]);
+        // 只要dp[i-1]小于0那么就会产生一次
+        if (array[i] + dp[i - 1] < array[i]) {
+            left = right;
+        }
+        if (dp[i]>maxSum || dp[i]==maxSum && (right-left+1)>maxLength) {
+            snapLeft = left;
+            snapRight = right;
+            maxLength = right - left + 1;
+            maxSum = dp[i];
+        }
+    }
+
+    int[] res = new int[maxLength];
+    int idx = 0;
+    for (int i=snapLeft; i<=snapRight; i++) {
+        res[idx++] = array[i];
+    }
+
+    return res;
+
+}
+```
+

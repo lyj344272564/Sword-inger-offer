@@ -1218,5 +1218,57 @@ public int Fibonacci(int n) {
 }
 ```
 
-### 42、
+### 42、买卖股票的最好时机1
 
+```java
+public int maxProfit (int[] prices) {
+    // write code here
+    int res = 0;
+    for (int i=0,min=Integer.MAX_VALUE; i<prices.length; i++) {
+        res = Math.max(res,prices[i]-min);
+        min = Math.min(prices[i],min);
+    }
+    return res;
+}
+```
+
+### 43、礼物的最大价值
+
+```java
+public int maxValue (int[][] grid) {
+    // write code here
+
+    int n = grid.length;
+    int m = grid[0].length;
+
+    int[][] f = new int[n+1][m+1];
+
+    for (int i=1; i<=n; i++) {
+        for (int j=1; j<=m; j++) {
+            f[i][j] = Math.max(f[i-1][j],f[i][j-1]) + grid[i-1][j-1];
+        }
+    }
+
+    return f[n][m];
+}
+```
+
+### 44、最长不含重复字符的子字符串
+
+```java
+public int lengthOfLongestSubstring (String s) {
+    int len = 0;
+    Map<Character,Integer> map = new HashMap<>();
+    for (int i=0,j=0; j<s.length(); j++) {
+        char c = s.charAt(j);
+        if (map.containsKey(c)) {
+            i = Math.max(i, map.get(c)+1);
+        }
+        len = Math.max(len,j-i+1);
+        map.put(c,j);
+    }
+    return len;
+}
+```
+
+### 45、

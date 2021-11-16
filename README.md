@@ -1271,4 +1271,560 @@ public int lengthOfLongestSubstring (String s) {
 }
 ```
 
-### 45、
+### 45、数组中重复的数字
+
+```java
+public int duplicate (int[] nums) {
+    List<Integer> list = new ArrayList<>();
+    for (int i=0; i< nums.length; i++) {
+        if (list.contains(nums[i])) {
+            return nums[i];
+        }
+        list.add(nums[i]);
+    }
+    return -1;
+}
+```
+
+### 46、矩阵中的路径
+
+```java
+public class 矩阵中的路径 {
+
+    public boolean hasPath (char[][] matrix, String str) {
+        // write code here
+        for (int i=0; i<matrix.length; i++) {
+            for (int j=0; j<matrix[0].length; j++) {
+                if (dfs(matrix,str,0,i,j)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean dfs(char[][] matrix, String str, int u, int x, int y) {
+        if (x<0 || x>matrix.length || y<0 || y>matrix[0].length || str.charAt(u) != matrix[x][y]) {
+            return false;
+        }
+        if (u == str.length()-1) {
+            return true;
+        }
+
+        int[] dx = new int[]{-1,1,0,0};
+        int[] dy = new int[]{0,0,-1,1};
+
+        char t = matrix[x][y];
+        matrix[x][y] = '*';
+        for (int i=0; i<4; i++) {
+            int a = x + dx[i];
+            int b = y + dy[i];
+            if (a>=0 && a<matrix.length && b>=0 && b<matrix[0].length) {
+                if (dfs(matrix,str,u+1,a,b)) {
+                    return true;
+                }
+            }
+        }
+        matrix[x][y] = t;
+        return false;
+    }
+}
+```
+
+### 47、机器人的运动范围
+
+```java
+public class 机器人的运动范围 {
+
+    // 一个标志  判断是否遍历过
+    boolean[][] st = new boolean[105][105];
+
+    int getSumGG(int x) {
+        int sum = 0;
+        while (x>0) {
+            sum += x%10;
+            x /= 10;
+        }
+        return sum;
+    }
+
+    int getSum(int x, int y) {
+        return getSumGG(x) + getSumGG(y);
+    }
+
+    public int movingCount(int threshold, int rows, int cols) {
+
+        int res = 0;
+
+        if (rows == 0 || cols == 0) {
+            return 0;
+        }
+        Queue<Cord> q = new LinkedList<>();
+        q.add(new Cord(0,0));
+        st[0][0] = true;
+
+        while (!q.isEmpty()) {
+            Cord cc = q.poll();
+            // 首先 判断是否  满足题意
+            if (getSum(cc.x,cc.y) > threshold || st[cc.x][cc.y]==false) {
+                continue;
+            }
+            res++;
+
+            // 向量遍历四个方向
+            int[] dx = new int[]{0, 1, 0, -1};
+            int[] dy = new int[]{1, 0, -1, 0};
+            for (int i=0; i<4; i++) {
+                int xx = cc.x + dx[i];
+                int yy = cc.y + dy[i];
+                if (xx>=0 && xx<rows && yy>=0 && yy<cols && st[xx][yy]==false && getSum(xx,yy)<=threshold) {
+                    q.add(new Cord(xx,yy));
+                    st[xx][yy] = true;
+                }
+            }
+        }
+        return res;
+    }
+}
+class Cord {
+    public int x;
+    public int y;
+
+    public Cord(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+```
+
+### 47、数组中的逆序对
+
+```java
+public class 数组中的逆序对 {
+    int[] temp ;
+
+    public int InversePairs(int[] nums) {
+
+        temp = new int[nums.length];
+
+        return  merge_sort(nums,0,nums.length-1);
+
+    }
+
+    public int merge_sort(int[] nums, int l, int r) {
+        if (l>=r) {
+            return 0;
+        }
+        int mid = l + r >> 1;
+        int res = merge_sort(nums,l,mid) + merge_sort(nums,mid+1,r);
+
+        int i = l;
+        int j = mid + 1;
+        int k = 0;
+        while (i<=mid && j<=r) {
+            if (nums[i] <= nums[j]) {
+                temp[k++] = nums[i++];
+            } else {
+                temp[k++] = nums[j++];
+                res += mid-i+1;
+                res %= 1000000007;
+            }
+        }
+
+        while (i <= mid) {
+            temp[k++] = nums[i++];
+        }
+        while (j <= r) {
+            temp[k++] = nums[j++];
+        }
+
+        for (i=l,j=0; i<=r; i++,j++) {
+            nums[i] = temp[j];
+        }
+
+        return res;
+
+    }
+}
+```
+
+### 48、最小的K个数
+
+```java
+public class 最小的K个数 {
+
+    public ArrayList<Integer> GetLeastNumbers_Solution(int[] nums, int k) {
+        ArrayList<Integer> res = new ArrayList<>();
+
+        quick_sort(nums,0,nums.length-1);
+        for (int i=0; i<k; i++) {
+            res.add(nums[i]);
+        }
+
+        return res;
+    }
+
+    public void quick_sort(int[] q, int l, int r) {
+        if (l >= r) {
+            return ;
+        }
+
+        int x = q[l];
+        int i = l - 1;
+        int j = r + 1;
+
+        while (i < j) {
+            do {
+                i++;
+            } while (q[i] < x);
+            do {
+                j--;
+            } while (q[j]>x);
+            if (i < j) {
+                int temp = q[i];
+                q[i] = q[j];
+                q[j] = temp;
+            }
+        }
+        quick_sort(q,l,j);
+        quick_sort(q,j+1,r);
+    }
+}
+```
+
+### 49、不用加减乘除做加法
+
+```java
+// 二进制每位相加就像等于异或操作 ^
+// 取进位则是a&b<<1
+public class 不用加减乘除做加法 {
+
+    public int Add(int a,int b) {
+       while (b != 0) {
+           int temp = a ^ b;
+           b = (a&b)<<1;
+           a = temp;
+       }
+       return a;
+    }
+}
+```
+
+### 50、二进制中1的个数
+
+```java
+public int NumberOf1(int n) {
+    int res = 0;
+    while (0 != n) {
+        // 每次寻找最后一个1  & 操作不会改变1的个数
+        res += n&1;
+        n >>>= 1;
+    }
+    return res;
+}
+```
+
+### 51、数值的整数次方
+
+```java
+public double Power(double x, int n) {
+
+    if (0 == n) {
+        return 1;
+    }
+
+    if (n == 1) {
+        return x;
+    }
+
+    double res = Power(x,n/2);
+    // 偶数不可能为负数
+    if (n%2 == 0) {
+        return res*res;
+    }
+    // 如果n小于0那么次方与正的成倒数
+    return n<0?res*res*1/x:res*res*x;
+}
+```
+
+### 52、数组中只出现一次的两个数字
+
+```java
+public int[] FindNumsAppearOnce (int[] nums) {
+    int sum = 0;
+    for (int x : nums) {
+        sum ^= x;
+    }
+
+    int mask = 1;
+    // 寻找最右面的1
+    while (0 == (mask&sum)) {
+        mask <<= 1;
+    }
+
+    int a = 0;
+    int b = 0;
+
+    for (int x : nums) {
+        if (0 == (mask&x)) {
+            a ^= x;
+        } else {
+            b ^= x;
+        }
+    }
+    if (a>b) {
+        int temp = a;
+        a = b;
+        b = temp;
+    }
+    return new int[]{a,b};
+}
+```
+
+### 53、 求1+2+3+...+n
+
+```java
+public int Sum_Solution(int n) {
+    boolean b = (n>1) && (n+=Sum_Solution(n-1))==0;
+    return n;
+}
+```
+
+### 54、顺时针打印矩阵
+
+```java
+public ArrayList<Integer> printMatrix(int[][] matrix) {
+    ArrayList<Integer> res = new ArrayList<>();
+    if (null==matrix || 0==matrix.length || 0==matrix[0].length) {
+        return res;
+    }
+
+    int rows = matrix.length;
+    int cols = matrix[0].length;
+
+    int left = 0;
+    int right = cols - 1;
+    int top = 0;
+    int bottom = rows - 1;
+
+    while (left<=right && top<=bottom) {
+        for (int i=left; i<=right; i++) {
+            res.add(matrix[top][i]);
+        }
+        for (int i=top+1; i<=bottom; i++) {
+            res.add(matrix[i][right]);
+        }
+        if (left<right && top<bottom) {
+            for (int i=right-1; i>=left; i--) {
+                res.add(matrix[bottom][i]);
+            }
+            for (int i=bottom-1; i>top; i--) {
+                res.add(matrix[i][left]);
+            }
+        }
+
+        left++;
+        right--;
+        top++;
+        bottom--;
+    }
+    return res;
+}
+```
+
+### 55、扑克牌顺子
+
+```java
+public boolean IsContinuous(int[] nums) {
+
+    if (null == nums) {
+        return false;
+    }
+
+    Arrays.sort(nums);
+
+    int k = 0;
+    while (0 == nums[k]) {
+        k++;
+    }
+
+    for (int i=k+1; i<nums.length; i++) {
+        if (nums[i] == nums[i-1]) {
+            return false;
+        }
+    }
+
+    return nums[nums.length-1]-nums[k] <= 4;
+}
+```
+
+### 56、把字符串转换成整数
+
+```java
+public int StrToInt (String str) {
+    // 去掉空格
+    char[] chars = str.trim().toCharArray();
+
+    if (0 == chars.length) {
+        return 0;
+    }
+
+    // 判断正负数  正数则为true
+    boolean positive = true;
+
+    // 从第几位开始
+    int start = 1;
+
+    // 如果第一位是符号位则用positive   若不是符号位则从第1位开始存储
+    if ('-' == chars[0]) {
+        positive = false;
+    } else if ('+' != chars[0]){
+        start = 0;
+    }
+
+    long res = 0;
+    for (int i=start; i<chars.length; i++) {
+        if (chars[i]<'0' || chars[i]>'9') {
+            break;
+        }
+        res = res*10 + (chars[i]-'0');
+        //如果越界根据正负号返回结果
+        if(res > Integer.MAX_VALUE) {
+            return positive?Integer.MAX_VALUE:Integer.MIN_VALUE;
+        }
+    }
+
+    return positive?(int)res:(int)(-1*res);
+}
+```
+
+### 57、跳台阶扩展问题
+
+```java
+public int jumpFloorII(int target) {
+    if (target <= 0) {
+        return -1;
+    } else if (target == 1) {
+        return 1;
+    } else {
+        return 2 * jumpFloorII(target-1);
+    }
+}
+```
+
+### 58、矩形覆盖
+
+```java
+public int rectCover(int target) {
+    if (target <= 0) {
+        return 0;
+    }
+    if (target == 1) {
+        return 1;
+    }
+    if (target == 2) {
+        return 2;
+    }
+    int first = 1;
+    int second = 2;
+    int res = 0;
+    for (int i=3; i<=target; i++) {
+        res = first + second;
+        first = second;
+        second = res;
+    }
+    return res;
+}
+```
+
+### 59、构建乘积数组
+
+```java
+public int[] multiply(int[] a) {
+    int[] b = new int[a.length];
+    for (int i=0,n=1; i<a.length; i++) {
+        b[i] = n;
+        n *= a[i];
+    }
+
+    for (int i=b.length-1,n=1; i>=0; i--) {
+        b[i] *= n;
+        n *= a[i];
+    }
+    return b;
+}
+```
+
+### 60、第一个只出现一次的字符
+
+```java
+public int FirstNotRepeatingChar(String str) {
+
+    HashMap<Character, Integer> map = new HashMap<>();
+    for (char c : str.toCharArray()) {
+        if (map.containsKey(c)) {
+            map.put(c,2);
+        } else {
+            map.put(c,1);
+        }
+    }
+    int idx = 0;
+    for (char c : str.toCharArray()) {
+        if (1 == map.get(c)) {
+            return idx;
+        }
+        idx++;
+    }
+    return -1;
+}
+```
+
+### 61、替换空格
+
+```java
+public String replaceSpace (String s) {
+
+    StringBuilder sb = new StringBuilder();
+
+    char[] chars = s.toCharArray();
+
+    for (int i=0; i<chars.length; i++) {
+        if (chars[i]==' ') {
+            sb.append("%20");
+        } else {
+            sb.append(chars[i]);
+        }
+    }
+    return sb.toString();
+}
+```
+
+### 62、调整数组顺序使奇数位于偶数前面1
+
+```java
+public int[] reOrderArray (int[] nums) {
+    if (null==nums || 0==nums.length) {
+        return nums;
+    }
+    //记录已经是奇数的位置
+    int j = 0;
+    int temp = 0;
+    for (int i=0; i<nums.length; i++) {
+        temp = nums[i];
+        if (nums[i]%2 == 0) {
+            continue;
+        } else {
+            int k = i;
+            while (k>j) {
+                //这区间整体向后移动一位
+                nums[k] = nums[k-1];
+                k--;
+            }
+            nums[k] = temp;
+            j++;
+        }
+    }
+    return nums;
+}
+```
+

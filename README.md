@@ -1828,3 +1828,342 @@ public int[] reOrderArray (int[] nums) {
 }
 ```
 
+### 63、数组中出现次数超过一半的数字
+
+```java
+public int MoreThanHalfNum_Solution(int[] nums) {
+
+    int leader = 0;
+    int count = 0;
+    for (int x : nums) {
+        if (0 == count) {
+            leader = x;
+        }
+        count += x==leader ? 1 : -1;
+    }
+    return leader;
+}
+```
+
+### 64、整数中1出现的次数
+
+```java
+public class 整数中1出现的次数 {
+
+    public int NumberOf1Between1AndN_Solution(int n) {
+        return hasOne(n);
+    }
+
+    public int hasOne(int n) {
+        if (0 == n) {
+            return 0;
+        }
+        // 将数字转为字符串
+        String number = String.valueOf(n);
+        // 获取最高位
+        int high = number.charAt(0) - '0';
+        // 获取最接近的100..00
+        int pow = (int)Math.pow(10, number.length()-1);
+        // 获取剩余数字
+        int left = n - high * pow;
+        if (1 == high) {
+            return  hasOne(pow-1) + left + 1 + hasOne(left);
+        } else {
+            return pow + high * hasOne(pow-1) + hasOne(left);
+        }
+    }
+}
+```
+
+### 65、把数组排成最小的数
+
+```java
+public String PrintMinNumber(int[] nums) {
+    //先将int数组转为String数组
+    String[] strs = new String[nums.length];
+    for (int i=0; i<nums.length; i++) {
+        strs[i]= String.valueOf(nums[i]);
+    }
+
+    //对String数组排序
+    Arrays.sort(strs,(x,y)->(x+y).compareTo(y+x));
+    StringBuilder sb = new StringBuilder();
+    for (String str : strs) {
+        sb.append(str);
+    }
+    return sb.toString();
+}
+```
+
+### 66、丑数
+
+```java
+public int GetUglyNumber_Solution(int n) {
+    if (0 == n) {
+        return 0;
+    }
+    int a = 0;
+    int b = 0;
+    int c = 0;
+    int[] dp = new int[n];
+    dp[0] = 1;
+    for (int i=1; i<n; i++) {
+        int n1 = dp[a] * 2;
+        int n2 = dp[b] * 3;
+        int n3 = dp[c] * 5;
+        int min = Math.min(n1,Math.min(n2,n3));
+        dp[i] = min;
+        if (n1 == min) {
+            a++;
+        }
+        if (n2 == min) {
+            b++;
+        }
+        if (n3 == min) {
+            c++;
+        }
+    }
+    return dp[n-1];
+}
+```
+
+### 67、和为S的连续正数序列
+
+```java
+public ArrayList<ArrayList<Integer>> FindContinuousSequence(int sum) {
+    ArrayList<ArrayList<Integer>> res = new ArrayList<>();
+    if (0 == sum) {
+        return res;
+    }
+    for (int i=1,j=1,s=1; i<=sum; i++) {
+        // 若小于每次把后面的一个数加上
+        while (s < sum) {
+            s += ++j;
+        }
+        if (s == sum && j-i+1>1) {
+            ArrayList<Integer> list = new ArrayList<>();
+            for (int k=i; k<=j; k++) {
+                list.add(k);
+            }
+            res.add(list);
+        }
+        // 向后移一位
+        s -= i;
+    }
+    return res;
+}
+```
+
+### 68、和为S的两个数字
+
+```java
+public ArrayList<Integer> FindNumbersWithSum(int[] nums, int target) {
+    ArrayList<Integer> res = new ArrayList<>();
+    if (0 == nums.length) {
+        return res;
+    }
+
+    int l = 0;
+    int r = nums.length - 1;
+
+    while (l < r) {
+        int sum = nums[l] + nums[r];
+        if (sum > target) {
+            r--;
+        } else if (sum < target) {
+            l++;
+        } else {
+            res.add(nums[l]);
+            res.add(nums[r]);
+            return res;
+        }
+    }
+
+    return res;
+}
+```
+
+### 69、左旋转字符串
+
+```java
+public String LeftRotateString(String str,int n) {
+
+    int num = str.length();
+    if (0 == num) {
+        return "";
+    }
+    if (0 == n) {
+        return str;
+    }
+    return str.substring(n%num,num) + str.substring(0,n%num);
+}
+```
+
+### 70、孩子们的游戏圆圈中最后剩下的数（环形约瑟夫问题）
+
+```java
+public class 孩子们的游戏圆圈中最后剩下的数 {
+
+    // 递归
+    public int LastRemaining_Solution(int n, int m) {
+        if (0 == n) {
+            return 0;
+        }
+        return (LastRemaining_Solution(n-1,m)+m) % n;
+    }
+		
+    // 非递归
+    public int LastRemaining_Solution1(int n, int m) {
+        int res = 0;
+        for (int i=2; i<=n; i++) {
+            res = (res+m) % i;
+        }
+        return res;
+    }
+}
+```
+
+### 71、字符流中第一个不重复的字符
+
+```java
+public class 字符流中第一个不重复的字符 {
+
+    Map<Character,Integer> map = new HashMap<>();
+    Queue<Character> q = new LinkedList<>();
+
+    public void Insert(char ch) {
+        if (map.containsKey(ch)) {
+            int value = map.get(ch);
+            map.put(ch,++value);
+        } else {
+            map.put(ch,1);
+        }
+        q.offer(ch);
+        while (!q.isEmpty() && map.get(q.peek())>1) {
+            q.poll();
+        }
+    }
+
+    public char FirstAppearingOnce() {
+        return q.isEmpty()? '#' : q.peek();
+    }
+}
+```
+
+### 72、剪绳子
+
+```java
+public int cutRope(int target) {
+
+    if (target <= 3) {
+        return 1 * (target - 1);
+    }
+
+    int res = 1;
+    if (target % 3 == 1) {
+        res *= 4;
+        target -= 4;
+    }
+
+    if (target % 3 == 2) {
+        res *= 2;
+        target -= 2;
+    }
+
+    while (target > 0) {
+        res *= 3;
+        target -= 3;
+    }
+
+    return res;
+
+}
+```
+
+### 73、在二叉树中找到两个节点的最近公共祖先
+
+```java
+public class 在二叉树中找到两个节点的最近公共祖先 {
+
+    public int lowestCommonAncestor (TreeNode root, int o1, int o2) {
+        return helper(root,o1,o2).val;
+    }
+
+    public TreeNode helper(TreeNode root, int o1, int o2) {
+        if (null==root || root.val==o1 || root.val==o2) {
+            return root;
+        }
+        TreeNode l = helper(root.left,o1,o2);
+        TreeNode r = helper(root.right,o1,o2);
+        //如果left为空，说明这两个节点在root结点的右子树上，我们只需要返回右子树查找的结果即可
+        if (null == l) {
+            return r;
+        }
+        if (null == r) {
+            return l;
+        }
+        //如果left和right都不为空，说明这两个节点一个在root的左子树上一个在root的右子树上，
+        //我们只需要返回cur结点即可。
+        return root;
+    }
+}
+```
+
+### 74、数组中重复的数字
+
+```java
+public int duplicate (int[] nums) {
+    List<Integer> list = new ArrayList<>();
+    for (int i=0; i< nums.length; i++) {
+        if (list.contains(nums[i])) {
+            return nums[i];
+        }
+        list.add(nums[i]);
+    }
+    return -1;
+}
+```
+
+### 75、调整数组顺序使奇数位于偶数前面2
+
+```java
+public int[] reOrderArrayTwo (int[] nums) {
+
+    int l = 0;
+    int r = nums.length - 1;
+
+    while (l < r) {
+        while (l<r && nums[l]%2!=0) {
+            l++;
+        }
+        while (l<r && nums[r]%2==0) {
+            r--;
+        }
+        if (l<r) {
+            int temp = nums[l];
+            nums[l] = nums[r];
+            nums[r] = temp;
+        }
+    }
+    return nums;
+}
+```
+
+### 76、打印从1到最大的n位数
+
+```java
+public int[] printNumbers (int n) {
+    // write code here
+   int res = 0;
+   while (n!=0) {
+       res = res * 10 + 9;
+       n--;
+   }
+   int[] arr = new int[res];
+   for (int i=0; i<arr.length; i++) {
+       arr[i] = i+1;
+   }
+   return arr;
+}
+```
+

@@ -2167,3 +2167,73 @@ public int[] printNumbers (int n) {
 }
 ```
 
+### 77、数据流中的中位数
+
+```java
+public class 数据流中的中位数 {
+
+    List<Integer> list = new ArrayList<>();
+
+    public void Insert(Integer num) {
+        list.add(num);
+    }
+
+    public Double GetMedian() {
+        Collections.sort(list);
+        int index = list.size()/2;
+        if (list.size()%2 != 0) {
+            return (double) list.get(index);
+        } else {
+            return ((double) list.get(index-1) + (double) list.get(index))/2;
+        }
+    }
+}
+```
+
+### 78、把数字翻译成字符串
+
+```java
+public int solve(String s) {
+
+    if (0 == s.length() || s.charAt(0)=='0') {
+        return 0;
+    }
+    if(s.length() < 2) {
+        return 1;
+    }
+    int[] dp = new int[s.length()];
+    dp[0] = 1;
+
+    for (int i=1; i<s.length(); i++) {
+        if (s.charAt(i) != '0') {
+            dp[i] = dp[i-1];
+        }
+        int num = (s.charAt(i-1)-'0')*10 + (s.charAt(i)-'0');
+        if (num>=10 && num<=26) {
+            if (i == 1) {
+                dp[i] += 1;
+            } else {
+                dp[i] += dp[i-2];
+            }
+        }
+    }
+    return dp[s.length()-1];
+}
+```
+
+### 79、表示数值的字符串
+
+```java
+public boolean isNumeric (String s) {
+    try {
+        if(Double.valueOf(s.toString())!=null)
+            return true;
+    } catch (Exception e) {
+        // TODO: handle exception
+    }
+    return false;
+}
+```
+
+### 80、
+

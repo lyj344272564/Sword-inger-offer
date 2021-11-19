@@ -2235,5 +2235,67 @@ public boolean isNumeric (String s) {
 }
 ```
 
-### 80、
+### 80、正则表达式匹配(dp不会)
+
+```java
+public boolean match(String str, String pattern) {
+    int n = str.length();
+    int m = pattern.length();
+    boolean[][] f = new boolean[n + 1][m + 1];
+
+    for (int i = 0; i <= n; i++) {
+        for (int j = 0; j <= m; j++) {
+            //分成空正则和非空正则两种
+            if (j == 0) {
+                f[i][j] = i == 0;
+            } else {
+                //非空正则分为两种情况 * 和 非*
+                if (pattern.charAt(j - 1) != '*') {
+                    if (i > 0 && (str.charAt(i - 1) == pattern.charAt(j - 1) || pattern.charAt(j - 1) == '.')) {
+                        f[i][j] = f[i - 1][j - 1];
+                    }
+                } else {
+                    //碰到 * 了，分为看和不看两种情况
+                    //不看
+                    if (j >= 2) {
+                        f[i][j] |= f[i][j - 2];
+                    }
+                    //看
+                    if (i >= 1 && j >= 2 && (str.charAt(i - 1) == pattern.charAt(j - 2) || pattern.charAt(j - 2) == '.')) {
+                        f[i][j] |= f[i - 1][j];
+                    }
+                }
+            }
+        }
+    }
+    return f[n][m];
+}
+```
+
+### 81、剪绳子进阶版(不会快速幂)
+
+```java
+public long pow (long cnt) {
+    // 如何快速计算3的cnt次幂?
+    if (cnt == 0) return 1;
+    if (cnt == 1) return 3;
+    long part = pow(cnt / 2);
+    if (cnt % 2 == 0) return part * part % 998244353;
+    return 3 * part * part % 998244353;
+}
+public long cutRope (long number) {
+    // write code here
+    if (number == 2) return 1;
+    if (number == 3) return 2;
+    long cnt = number / 3;
+    if (number % 3 == 0) {
+        return pow(cnt) % 998244353;
+    } else if (number % 3 == 1) {
+        cnt--;
+        return 2 * 2 * pow(cnt) % 998244353;
+    } else {
+        return 2 * pow(cnt) % 998244353;
+    }
+}
+```
 

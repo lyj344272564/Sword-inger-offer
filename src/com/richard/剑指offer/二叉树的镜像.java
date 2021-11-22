@@ -27,6 +27,7 @@ public class 二叉树的镜像 {
         stack.add(root);
         while (!stack.isEmpty()) {
             TreeNode t = stack.pop();
+            // 判断最下面一层是否需要加到 栈中
             if (null != t.left) {
                 stack.push(t.left);
             }

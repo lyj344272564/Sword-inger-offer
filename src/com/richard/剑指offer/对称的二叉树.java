@@ -6,7 +6,7 @@ public class 对称的二叉树 {
         if (null == root) {
             return true;
         }
-        return dfs(root.left,root.right) && dfs(root.right,root.left);
+        return dfs(root.left,root.right);
     }
 
     public boolean dfs(TreeNode l, TreeNode r) {

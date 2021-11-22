@@ -1,5 +1,6 @@
 package com.richard.剑指offer;
 
+import java.util.Collections;
 import java.util.HashMap;
 
 public class 第一个只出现一次的字符 {
@@ -22,5 +23,6 @@ public class 第一个只出现一次的字符 {
             idx++;
         }
         return -1;
+
     }
 }

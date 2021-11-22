@@ -22,7 +22,7 @@ public class 二叉树的镜像 {
         if (null == root) {
             return null;
         }
-
+        
         Stack<TreeNode> stack = new Stack<>();
         stack.add(root);
         while (!stack.isEmpty()) {

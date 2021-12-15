@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class 重建二叉树 {
 
-    //key是中序遍历的值，value是中序遍历的结果  （下标）
+    //key是中序遍历的值，value是中序遍历的结果（下标）
     Map<Integer, Integer> map = new HashMap<>();
 
     public TreeNode reConstructBinaryTree(int [] preorder,int [] inorder) {

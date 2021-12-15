@@ -8,6 +8,7 @@ public class 最长不含重复字符的子字符串 {
     public int lengthOfLongestSubstring (String s) {
         int len = 0;
         Map<Character,Integer> map = new HashMap<>();
+        // j之前最长不重复子字符串
         for (int i=0,j=0; j<s.length(); j++) {
             char c = s.charAt(j);
             if (map.containsKey(c)) {
